@@ -91,10 +91,12 @@
         })
         // console.log(localStorage.getItem("accesToken"))
         let token = localStorage.getItem("accestoken")
-        axios.get("http://35.240.157.177/image",{},{ headers: {authorization: token}})
+        axios.get("http://35.240.157.177/image",{ headers: {authorization: token}})
         .then((response => {
-            for(let z = 0; z < response.length; z ++){
-                let url = response[z].url
+            let data = response.data
+            for(let z = 0; z < data.length; z ++){
+                let url = data[z].url
+                // console.log(response[z].url)
                 let newImage = document.createElement("img");
                 newImage.setAttribute("src",url)
                 newImage.setAttribute("alt","Smiley Face");
