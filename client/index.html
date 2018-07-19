@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title> 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet" href="body.css
+    ">
+</head>
+<body>
+    <div id="app">
+            <div class="row">
+              <div class="col-md-3">
+
+                <div class="container">
+                        email:<br>
+                        <input type="text" id="email" id="email" >
+                        <br>
+                        name:<br>
+                        <input type="text" id="name" id="name" >
+                        <br><br>
+                        <button id="submit-email">submit</button>
+                </div>
+                <br>
+                <div class="container">
+                    <label>File
+                      <input type="file" id="file" ref="file" id="file"/>
+                    </label>
+                    <button id="submit-picture">Submit</button>
+                </div>
+
+              </div>
+              <div class="col-md-9">
+                    <h1>This is the uploader app </h1>
+                    <br>
+                    <div id="container">
+                            <img src="https://images.pexels.com/photos/356378/pexels-photo-356378.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">
+                            <img src="https://images.pexels.com/photos/39317/chihuahua-dog-puppy-cute-39317.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">
+                            <img src="https://images.pexels.com/photos/58997/pexels-photo-58997.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">
+                            <img src="https://images.pexels.com/photos/485294/pexels-photo-485294.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">
+                            <img src="https://images.pexels.com/photos/89775/dog-hovawart-black-pet-89775.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">
+                            <img src="https://images.pexels.com/photos/776078/pexels-photo-776078.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Smiley face">    
+                    </div>
+              </div>
+            </div>
+    </div>
+
+    <script>
+        let login = document.getElementById("submit-email").addEventListener("click",function(e){
+            let email = document.getElementById("email").value;
+            let name = document.getElementById("name").value;
+            axios.post('http://35.240.157.177/request-token', {
+                email,
+                name
+             })
+             .then(function (response) {
+            //    console.log(response);
+               let accesToken = response.data.uuid;
+               console.log(accesToken);
+               localStorage.setItem("accesToken", accesToken)
+             })
+             .catch(function (error) {
+               console.log(error);
+             });
+        })
+        
+        let upload = document.getElementById("file").addEventListener("change",function(e){
+            // console.log(e.target.files[0].name);
+            let file = e.target.files[0].name;
+            let formData = new FormData();
+
+            return formData
+           
+        })
+
+        let submit = document.getElementById("submit-picture",(e)=>{
+            let formData= upload();
+            formData.append("image",file)
+            axios.post('http://35.240.157.177/image',formData,{
+                headers: {authorization: localStorage.getItem("accesToken")}
+            }).then((data)=>{
+                console.log(data)
+            }).catch((err => {
+                console.log(err);
+            }))
+        })
+        // console.log(localStorage.getItem("accesToken"))
+        let token = localStorage.getItem("accestoken")
+        axios.get("http://35.240.157.177/image",{},{ headers: {authorization: token}})
+        .then((response => {
+            for(let z = 0; z < response.length; z ++){
+                let url = response[z].url
+                let newImage = document.createElement("img");
+                newImage.setAttribute("src",url)
+                newImage.setAttribute("alt","Smiley Face");
+                document.getElementById("container").appendChild(newImage)
+            }
+
+        }))
+        .catch((err => console.log(err)))
+
+
+        
+    </script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>    
+</body>
+</html>
